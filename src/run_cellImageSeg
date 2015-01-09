@@ -1,0 +1,64 @@
+#!/bin/csh -f
+
+# Author: Jin Chu Wu  Ph.D.
+#         National Institute of Standards and Technology
+
+#g++ -o cellImageSeg cellImageSeg.C
+
+set WHICHRATE = 1
+
+set ITERATIONNUM = 1
+#set ITERATIONNUM = 10
+#set ITERATIONNUM = 500
+
+#set var = (Huang RenyiEntropy Li MaxEntropy Intermodes Minimum Triangle)
+set var = (Huang)
+
+foreach ALG ($var)
+
+echo $ALG
+
+##### Cell Image Segmentation Data Analysis
+##### =====================================
+
+if ($ALG == "Huang") then
+  set RNGS = 604439207
+else if ($ALG == "RenyiEntropy") then
+  set RNGS = 3216020480
+else if ($ALG == "Li") then
+  set RNGS = 2343771499
+else if ($ALG == "MaxEntropy") then
+  set RNGS = 3839411735
+else if ($ALG == "Intermodes") then
+  set RNGS = 1618860293
+else if ($ALG == "Minimum") then
+  set RNGS = 182103688
+else if ($ALG == "Triangle") then
+  set RNGS = 4272990345
+endif
+
+#set RNGS = 0
+
+set inputDataFile = /home/jinchuwu/CellImageSegmentation/ImgSegEval/data/$ALG.txt
+
+cellImageSeg -b $WHICHRATE $ITERATIONNUM $inputDataFile $RNGS
+
+#cellImageSeg -a $WHICHRATE $inputDataFile
+
+end #foreach ALG
+
+##### Compare MERs of two algorithms
+##### ==============================
+
+if (0) then
+
+#set ALG2 = (Huang RenyiEntropy Li MaxEntropy Intermodes Minimum Triangle)
+set ALG2 = (RenyiEntropy)
+
+echo $ALG2
+
+set inputDataFile2 = /home/jinchuwu/CellImageSegmentation/ImgSegEval/data/$ALG2.txt
+
+cellImageSeg -c $WHICHRATE $inputDataFile $inputDataFile2
+
+endif

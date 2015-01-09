@@ -1,0 +1,83 @@
+Author: Jin Chu Wu  Ph.D.
+        National Institute of Standards and Technology
+
+1. There are four directories: doc, src, data, results.
+The output files of some examples are in the directory "results".
+
+2. The software is designed based on a LINUX platform. The C++ code
+"cellImageSeg.C" is compiled using "g++ -o cellImageSeg cellImageSeg.C".
+
+3. The structure of data file is as follows. The first line is item names.
+The first column is the number of pixels in the ground-truth cell.
+The second column is the number of pixels in the algorithm-detected cell.
+The third column is the number of pixels in the false positive region.
+The fourth column is the number of pixels in the false negative region.
+The columns thereafter do not matter.
+
+4. The bootstrap method is a stochastic process, and the variance of SE is
+small as investigated in our paper. The random number generator seed "RNGS" can
+be assigned by the system if use "set RNGS = 0" in the script file, or by user
+as specified in the script file.
+
+5. The system must have R software, which is specified in the source code,
+
+#define R_PATH "R"
+
+6. The pathnames in the script file need to be set appropriately based on
+the user's system setting.
+
+7. To evaluate CIS algorithm using bootstrap method
+   ================================================
+
+1) Use "set ITERATIONNUM = 1" in the script file "run_cellImageSeg".
+2) Specify an algorithm in the script file.
+3) Use "cellImageSeg -b $WHICHRATE $ITERATIONNUM $inputDataFile $RNGS" in the
+   script file.
+4) Run the script file.
+5) The output file is named as "CISTotalProb", which looks like
+
+Total probability is = 0.035841934746466984
+SE of TP is = 0.000976603658580868
+CI_2 of TP is = (0.033927826733380191, 0.037756042759553778)
+
+8. To evaluate CIS algorithm using analytical method
+   =================================================
+
+1) Use "set ITERATIONNUM = 1" in the script file "run_cellImageSeg".
+2) Specify an algorithm in the script file.
+3) Use "cellImageSeg -a $WHICHRATE $inputDataFile" in the script file.
+4) Run the script file.
+5) The standard output looks like
+
+Total probability is = 0.035841934746466984
+SE of TP is = 0.000169185418597032
+CI_2 of TP is = (0.035510337416691871, 0.036173532076242097)
+
+9. To create a distribution of SEs of TER
+   ======================================
+
+1) Assign a number to the variable ITERATIONNUM in the script file
+   "run_cellImageSeg".
+2) Specify an algorithm in the script file.
+3) Use "cellImageSeg -b $WHICHRATE $ITERATIONNUM $inputDataFile $RNGS" in the
+   script file.
+4) Run the script file.
+5) A file "bootstrapReps_SEOfTER" is created, which contains the specified
+   number of bootstrap replications of SEs of TER.
+6) The standard output looks like
+
+SE:        0.000013105585153649
+CI:       (0.000976603700000000, 0.001017298800000000)
+Min & Max: 0.000976603658580868, 0.001017298821543938
+
+10. To compare MERs of two algorithms
+    =================================
+
+1) Specify an algorithm, e.g., "set var = (Huang)" in the script file
+   "run_cellImageSeg".
+2) Specify another algorithm, e.g., "set ALG2 = (RenyiEntropy)" in the script
+   file.
+3) Use "cellImageSeg -c $WHICHRATE $inputDataFile $inputDataFile2" in the
+   script file.
+4) Run the script file.
+5) A file "comparisonOfMERsOfTwoAlgs" is created, which contains the results.
